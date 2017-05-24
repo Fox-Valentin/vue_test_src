@@ -48,7 +48,7 @@
           <div class="sales-board-line">
               <div class="sales-board-line-left">&nbsp;</div>
               <div class="sales-board-line-right">
-                  <div class="button">
+                  <div class="button" @click="showPayDialog">
                     立即购买
                   </div>
               </div>
@@ -76,6 +76,32 @@
           <li>用户所在地理区域分布状况等</li>
         </ul>
       </div>
+      <my-dialog :isShowDialog="isShowPayDialog" @on-close="payDialogClose">
+        <table class="buy-dialog-table">
+          <tr>
+            <th>购买数量</th>
+            <th>产品类型</th>
+            <th>有效时间</th>
+            <th>产品版本</th>
+            <th>总价</th>
+          </tr>
+          <tr>
+            <td>{{ buyNumber }}</td>
+            <td>{{ buyType.label }}</td>
+            <td>{{ period.label }}</td>
+            <td>
+              <span v-for="item in versions">{{ item.label }}</span>
+            </td>
+            <td>{{ totalPrice }}</td>
+          </tr>
+        </table>
+        <h3 class="buy-dialog-title">请选择银行</h3>
+        <bank-chooser @on-change="getBank"></bank-chooser>
+        <div class="button buy-dialog-btn" @click="createOrder">
+          确认购买
+        </div>
+      </my-dialog>
+      <check-order :is-show-check-dialog="isShowCheckOrder" @on-close-check-dialog="closeCheckDialog"></check-order>
   </div>
 </template>
 <script>
@@ -84,12 +110,18 @@ import selection from '@/components/select'
 import choosen from '@/components/choosen'
 import vcount from '@/components/vcount'
 import mutipleChoosen from '@/components/mutipleChoosen'
+import myDialog from '@/components/dialog'
+import bankChooser from '@/components/bankChooser'
+import checkOrder from '@/components/checkOrder'
 export default {
   components: {
     selection,
     choosen,
     vcount,
-    mutipleChoosen
+    mutipleChoosen,
+    myDialog,
+    bankChooser,
+    checkOrder
   },
   data () {
     return {
@@ -98,6 +130,10 @@ export default {
       period: {},
       versions: [],
       totalPrice: 0,
+      isShowPayDialog: false,
+      bankId: null,
+      orderId: null,
+      isShowCheckOrder: false,
       versionList: [
         {
           label: '客户版',
@@ -163,6 +199,38 @@ export default {
         }, (err) => {
         console.log(err)
       })
+    },
+    payDialogClose () {
+      this.isShowPayDialog = false
+    },
+    showPayDialog () {
+      this.isShowPayDialog = true
+    },
+    getBank (bank) {
+      this.bankId = bank.id
+    },
+    createOrder () {
+      let buyVersionArray = _.map(this.versions, (item) => {
+        return item.value
+      })
+      let paramsObj = {
+        buyNumber: this.buyNumber,
+        butype: this.buyType.value,
+        period: this.period.value,
+        version: buyVersionArray.join(','),
+        bankId: this.bankId
+      }
+      this.$http.post('/api/createOrder', paramsObj).then(
+        (res) => {
+          this.orderId = res.data.orderId
+          this.isShowCheckOrder = true
+          this.isShowPayDialog = false
+        }, (err) => {
+        console.log(err)
+      })
+    },
+    closeCheckDialog () {
+      this.isShowCheckOrder = false
     }
   },
   mounted () {

@@ -6,6 +6,7 @@ import layout from '@/components/layout'
 
 import indexPage from '@/components/pages/indexPage'
 import detailPage from '@/components/pages/detailPage'
+import orderList from '@/components/pages/orderList'
 import detailFor from '@/components/pages/detail/forecast'
 import detailAna from '@/components/pages/detail/analysis'
 import detailCou from '@/components/pages/detail/count'
@@ -48,6 +49,10 @@ let router = new VRouter({
           component: detailPub
         }
       ]
+    },
+    {
+      path: '/orderList',
+      component: orderList
     }
   ]
 })
