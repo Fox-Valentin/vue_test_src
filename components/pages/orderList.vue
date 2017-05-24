@@ -125,7 +125,6 @@
         this.$http.post('/api/getOrderList', params).then(
           (res) => {
             this.tableData = res.data.list
-            console.log(res.data)
           },
           (err) => {
             console.log(err)
@@ -154,6 +153,7 @@
     },
     mounted () {
       this.getOrderData()
+      console.log(this.$store)
     }
   }
 </script>

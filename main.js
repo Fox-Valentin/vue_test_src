@@ -14,12 +14,13 @@ import detailPub from '@/components/pages/detail/publish'
 
 import VRouter from 'vue-router'
 import Vueresource from 'vue-resource'
+import store from './store'
+console.log(store)
 // import Hello2 from '@/components/Hello2'
 Vue.config.productionTip = false
 /* eslint-disable no-new */
 Vue.use(VRouter)
 Vue.use(Vueresource)
-// Vue.use(Vuex)
 let router = new VRouter({
   mode: 'history',
   routes: [
@@ -58,6 +59,7 @@ let router = new VRouter({
 })
 new Vue({
   el: '#app',
+  store,
   components: {
     layout
   },
