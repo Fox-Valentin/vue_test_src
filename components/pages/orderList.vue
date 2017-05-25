@@ -97,23 +97,32 @@
             key: 'amount'
           }
         ],
-        tableData: [],
+        // tableData: [],
         headActive: false,
         currentOrder: 'desc'
       }
     },
     methods: {
       getProductId (obj) {
-        this.productId = obj.value
-        this.getOrderData()
+        this.$store.commit('updateOrderParams', {
+          key: 'productId',
+          val: obj.value
+        })
+        this.$store.dispatch('fetchOrderlist')
       },
       getStartDate (date) {
-        this.startDate = date
-        this.getOrderData()
+        this.$store.commit('updateOrderParams', {
+          key: 'startDate',
+          val: date
+        })
+        this.$store.dispatch('fetchOrderlist')
       },
       getEndDate (date) {
-        this.endDate = date
-        this.getOrderData()
+        this.$store.commit('updateOrderParams', {
+          kay: 'endDate',
+          val: date
+        })
+        this.$store.dispatch('fetchOrderlist')
       },
       getOrderData () {
         let params = {
@@ -147,13 +156,18 @@
     },
     watch: {
       query () {
-        this.getOrderData()
+        this.$store.dispatch('fetchOrderlist')
+        // this.getOrderData()
         console.log('change query')
       }
     },
     mounted () {
-      this.getOrderData()
-      console.log(this.$store)
+      this.$store.dispatch('fetchOrderlist')
+    },
+    computed: {
+      tableData () {
+        return this.$store.getters.getOrderList
+      }
     }
   }
 </script>

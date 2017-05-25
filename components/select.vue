@@ -15,6 +15,7 @@
     </div>
 </template>
 <script>
+import { eventBus } from '@/eventBus'
 export default {
   data () {
     return {
@@ -34,14 +35,21 @@ export default {
     }
   },
   methods: {
-    isDropToggle () {
+    isDropToggle (event) {
+      event.stopPropagation()
       this.isDrop = !this.isDrop
     },
     select (index, value) {
       this.nowIndex = index
       this.isDrop = !this.isDrop
+      eventBus.$emit('reset-components')
       this.$emit('on-change', this.selections[this.nowIndex])
     }
+  },
+  mounted () {
+    eventBus.$on('reset-components', () => {
+      this.isDrop = false
+    })
   }
 }
 </script>

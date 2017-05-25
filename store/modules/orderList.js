@@ -1,4 +1,4 @@
-import Vue from 'Vue'
+import Vue from 'vue'
 
 const state = {
   orderList: [],
@@ -11,7 +11,7 @@ const getters = {
 
 const actions = {
   fetchOrderlist ({commit, state}) {
-    Vue.$http.post('/api/getOrderList', state.params).then(
+    Vue.http.post('/api/getOrderList', state.params).then(
       (res) => {
         commit('updateOrderList', res.data.list)
       },
@@ -25,6 +25,9 @@ const actions = {
 const mutations = {
   updateOrderList (state, payload) {
     state.orderList = payload
+  },
+  updateOrderParams (state, {key, val}) {
+    state.params[key] = val
   }
 }
 
